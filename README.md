@@ -84,13 +84,7 @@ RegVis/
 ├── css/
 │   └── style.css       # Layout and visual theme
 ├── js/
-│   ├── main.js         # Application entry, event bindings
-│   ├── regression.js   # Least-squares computation (SSE, TSS, R², intervals)
-│   ├── scatterplot.js  # Primary scatterplot + error squares
-│   ├── residuals.js    # Residuals vs. fitted view
-│   ├── qqplot.js       # Q-Q plot view
-│   ├── sampling.js     # Confidence interval sampling mechanism
-│   └── tutorial.js     # Guided tutorial overlay
+│   ├── ols_diagonostics.js # Application
 ├── images/             # Screenshot assets
 └── README.md
 ```
