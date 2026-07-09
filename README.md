@@ -113,17 +113,6 @@ For n > 500 points the rendering layer switches from SVG to Canvas automatically
 ## Evaluation
 
 An expert evaluation with 18 statistics professionals (12 university instructors, 6 data analysts) compared RegVis against a representative fragmented-tools workflow using a within-subjects counterbalanced design.
-
-| Metric | RegVis | Fragmented tools |
-|---|---|---|
-| Task completion time | 22.4 min | 31.8 min (**29 % faster**) |
-| Interpretation errors per session | 1.2 | 3.6 (**67 % fewer**) |
-| Task success rate | 87 % | 61 % |
-| System Usability Scale (SUS) | **79.2** | 58.7 |
-| CI misconception rate | 17 % | 72 % |
-
-94 % of participants preferred RegVis on all eight comparative dimensions.
-
 ---
 
 ## Citation
