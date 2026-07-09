@@ -111,8 +111,8 @@ For n > 500 points the rendering layer switches from SVG to Canvas automatically
 ---
 
 ## Evaluation
+to be completed.
 
-An expert evaluation with 18 statistics professionals (12 university instructors, 6 data analysts) compared RegVis against a representative fragmented-tools workflow using a within-subjects counterbalanced design.
 ---
 
 ## Citation
