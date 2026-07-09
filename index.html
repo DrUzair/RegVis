@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<link rel='shortcut icon' type='image/x-icon' href='favicon.ico'/>
+    <link rel="stylesheet" href="CSS/style.css"/>
+    <script src="https://d3js.org/d3.v4.js"></script>
+	<link rel="stylesheet" type="text/css" href="CSS/thunderTour.css" media="screen"> 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+	<script src="JS/thunderTour.js"></script>
+    <title>SPIME Lab</title>
+  </head>
+  <body onload="newdata_plot()">
+    <div class="header">      
+      <div class='header-center '>
+        <span style="font-size:40px; text-align:center"><span style='font-weight: bold; color: teal'>Simple Linear Regression</span>
+      </div>
+    </div>
+    <section class='mdp_tables'>
+		<div id="inputs" class='params'>
+			<div>
+				<a href="#" class="btn startTour">How to?</a>
+			</div>
+			<div class='axis_range'>
+				<div style="display:flex; flex-direction: row; justify-content: center; align-items: left">
+					<label for="input_minx">X-axis:</label>
+					<input type="number" id="input_minx" value="50" onkeydown="rescale_plot(this)" >
+					<input type="number" id="input_maxx" value="100" onkeydown="rescale_plot(this)" >
+				</div>
+				
+				<div style="display:flex; flex-direction: row; justify-content: center; align-items: left">
+					<label for="input_miny">Y-axis:</label>
+					<input type="number" id="input_miny" value="50" onkeydown="rescale_plot(this)" >
+					<input type="number" id="input_maxy" value="100" onkeydown="rescale_plot(this)">
+				</div>
+			</div>
+			
+			<label class="container">Show Regression line
+				<input type="checkbox" id="checkBoxRegressionLine" onclick="newdata_plot()">
+				<span class="checkmark"></span>
+			</label>
+			<label class="container">Show SSE
+				<input type="checkbox" id="checkBoxResidualBoxes" onclick="newdata_plot()">
+				<span class="checkmark"></span>
+			</label>
+			<label class="container">Show Total SS
+				<input type="checkbox" id="checkBoxSSE_Boxes" onclick="newdata_plot()">
+				<span class="checkmark"></span>
+			</label>
+			<label class="container">Confidence Interval
+				<input type="checkbox" id="checkBoxCI_Lines" onclick="newdata_plot()">
+				<span class="checkmark"></span>
+			</label>
+			<label for="ci_alpha_slider" id='ci_alpha_slider_label'> CI alpha 95%</label>
+			<input type="range" min="50" max="99" value="95" class="slider" id="ci_alpha_slider">
+			<label class="container">Prediction Interval
+				<input type="checkbox" id="checkBoxPI_Lines" onclick="newdata_plot()">
+				<span class="checkmark"></span>
+			</label>
+			<label for="pi_alpha_slider" id='pi_alpha_slider_label'> PI alpha 95%</label>
+			<input type="range" min="50" max="99" value="95" class="slider" id="pi_alpha_slider">
+
+			<button id='reset-button' class='button'> Reset </button>
+			<button id='simulate-button' class='button'> Sample </button>
+			<button id='download-button' class='button'> Export Data</button>
+			
+			<label for="upload-input" id="import-btn" style="display:block; background:teal; border-radius:3px; border:1px dotted teal; color:white; font-size:15px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Arial, sans-serif; margin:2px 1px 2px 0; padding:10px 20px; cursor:pointer; text-align:center; box-sizing:border-box;">Import Data</label>
+			<input type="file" id="upload-input" name="upload-button" oninput="upload_data()" style="display:none;"/>
+			
+		</div>
+		</div>
+		<div>
+		<!--	<div id="galton_data_plot"></div> -->
+			<div id="new_data_plot_div" class="svg-container" style='border: thin solid black;'> </div>
+		</div>
+		<div>
+		<!--	<div id="qq_plot_div" style="border: thin solid black; height: 35h;  width: 35vw;"></div> -->
+			<div id="residuals_plot_div" style="svg-container" style='border: thin solid black;'> </div>
+			<div id="norm_plot_div" style="svg-container" style='border: thin solid black;'> </div>
+		</div>
+    </section>
+    <div class="footer">
+      <p>SPIME Lab Inc.</p>
+    </div>
+	<a href="https://gitlab.com/druzair/stats/-/blob/master/ols/ols.md" target="_blank">Further reading</a>
+    <script src="JS/ols_diagnostics.js"></script>
+	<script src='JS/FileSaver.js'></script>
+	<script src="JS/underscore.js"></script>
+	<script>
+	var norm_plot_div_explanation = 'For an adequate model, the errors should be normally distributed. The normalized SSE (x-axis) should appear along the expected values (y-axis) line.';
+	document.getElementsByClassName('startTour')[0].addEventListener('click', function(){
+       //remove popup 
+					Tour({
+
+					steps:[
+						{selector:'.axis_range',
+						content:'Modify range of axis here. Press Enter after changing the range.',
+						side:'right'},
+						{selector:'#checkBoxRegressionLine', content:'Draw regression line.', side:'right'},
+						{selector:'#checkBoxResidualBoxes', content:'Shows Sum of Squared Errors (residual variation in Y that is not explained by X). <br>SSE = &sum;(y&#770;<sub>i</sub> - y<sub>i</sub>)<sup>2</sup></br>', side:'right'},
+						{selector:'#checkBoxSSE_Boxes', content:'Shows total variation in Y. <br>Total SS = &sum;(y<sub>i</sub> - y&#772;)<sup>2</sup></br><br>SSR = Total SS - SSE = &sum;(y&#772;<sub>i</sub> - y&#770;<sub>i</sub>)<sup>2</sup></br> sum of squares for regression (the variation in Y explained by regression line)', side:'right'}, 
+						{selector:'#checkBoxCI_Lines', content:'On average, the predicted Y for a given xi, E(Y|X=xi), will fall within this CI.', side:'right'}, 
+						{selector:'#checkBoxPI_Lines', content:'A particular value of Y will fall withing this PI. Wider because it includes ' +
+						'<br> i) error in estimating Line of Means. </br><br> ii) error in estimating Y using Line of Means.</br>', side:'right'}, 
+						{selector:'.svg-container', content:'Click in this area to draw data points.', side:'bottom'},
+						{selector:'#residuals_plot_div', content:'For an adequate model, this plot should show a random scatter of points, free of any patterns, around the horizontal "zero error" line. Spot the outliers and their effect on the model.', side:'bottom'
+						},
+						{selector:'#norm_plot_div',
+						content:norm_plot_div_explanation,
+						side:'bottom'
+						},
+						
+
+					]
+					});
+	});
+	var _rvf = document.getElementById('explain_residuals_vs_fitted_plot');
+	if (_rvf) _rvf.addEventListener('click', function(){
+		Tour(
+			{steps:
+				[{selector:'#residuals_plot_div',content:'For an adequate model, this plot should show a random scatter of points, free of any patterns, around the horizontal "zero error" line. Spot the outliers and their effect on the model.', side:'bottom'}
+				]
+			});
+	});
+	
+	var _rnp = document.getElementById('explain_residuals_normality_plot');
+	if (_rnp) _rnp.addEventListener('click', function(){
+					Tour({
+
+					steps:[
+
+						{selector:'#norm_plot_div',
+						content:norm_plot_div_explanation, side:'bottom'
+						}
+					]
+
+					});
+	});
+	
+	</script>
+  </body>
+  
+</html>
